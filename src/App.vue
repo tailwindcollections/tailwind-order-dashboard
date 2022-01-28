@@ -270,7 +270,9 @@ const totalOrder = computed(() =>
             class="flex justify-between items-center mt-1 text-xs text-gray-400"
           >
             <span> {{ formatMoney(order.price) }} x {{ order.quantity }} </span>
-            <span> {{ formatMoney(order.price * order.quantity) }} </span>
+            <span class="font-bold text-gray-800">
+              {{ formatMoney(order.price * order.quantity) }}
+            </span>
           </div>
           <a
             href="#"
