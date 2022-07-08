@@ -49,6 +49,7 @@
   onMounted(async () => {
     getProducts();
     getOrders();
+    getShippingAndStorage();
   });
 
   const products = ref([]);
@@ -69,6 +70,18 @@
     ).json();
 
     orders.value = data.value.data;
+  };
+
+  const shipping = ref({});
+  const storage = ref({});
+
+  const getShippingAndStorage = async () => {
+    const { data } = await useFetch(
+      "http://order-dashboard-api.test/api/shipping-and-storage"
+    ).json();
+
+    shipping.value = data.value.shipping;
+    storage.value = data.value.storage;
   };
 </script>
 
@@ -183,11 +196,15 @@
               <div class="grid grid-cols-2 gap-x-4 pt-4">
                 <div>
                   <div class="text-sm text-gray-600">Shipments Created</div>
-                  <div class="pt-2 text-lg font-semibold">2</div>
+                  <div class="pt-2 text-lg font-semibold">
+                    {{ shipping.total }}
+                  </div>
                 </div>
                 <div>
                   <div class="text-sm text-gray-600">Total Shipment</div>
-                  <div class="pt-2 text-lg font-semibold">$30.00</div>
+                  <div class="pt-2 text-lg font-semibold">
+                    {{ formatMoney(shipping.amount) }}
+                  </div>
                 </div>
               </div>
               <button
@@ -219,11 +236,15 @@
               <div class="grid grid-cols-2 gap-x-4 pt-4">
                 <div>
                   <div class="text-sm text-gray-600">Sending to Storage</div>
-                  <div class="pt-2 text-lg font-semibold">300</div>
+                  <div class="pt-2 text-lg font-semibold">
+                    {{ storage.total }}
+                  </div>
                 </div>
                 <div>
                   <div class="text-sm text-gray-600">Total Storage</div>
-                  <div class="pt-2 text-lg font-semibold">$1,400.00</div>
+                  <div class="pt-2 text-lg font-semibold">
+                    {{ formatMoney(storage.amount) }}
+                  </div>
                 </div>
               </div>
               <button
