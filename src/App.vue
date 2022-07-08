@@ -1,82 +1,75 @@
 <script setup>
-import DashboardIcon from "./icons/dashboard.svg";
-import DesignIcon from "./icons/design.svg";
-import OrderIcon from "./icons/order.svg";
-import InventoryIcon from "./icons/inventory.svg";
-import TruckIcon from "./icons/truck.svg";
-import ContactIcon from "./icons/contact.svg";
-import ProfileIcon from "./icons/profile.svg";
-import BillingIcon from "./icons/billing.svg";
-import HelpIcon from "./icons/help.svg";
-import LogoutIcon from "./icons/logout.svg";
-import ChevronLeftIcon from "./icons/chevron-left.svg";
-import ArrowLeftIcon from "./icons/arrow-left.svg";
-import BoxIcon from "./icons/box.svg";
-import TShirtIcon from "./icons/t-shirt.svg";
-import ChevronRightIcon from "./icons/chevron-right.svg";
-import InfoIcon from "./icons/info.svg";
-import { computed } from "vue";
+  import DashboardIcon from "./icons/dashboard.svg";
+  import DesignIcon from "./icons/design.svg";
+  import OrderIcon from "./icons/order.svg";
+  import InventoryIcon from "./icons/inventory.svg";
+  import TruckIcon from "./icons/truck.svg";
+  import ContactIcon from "./icons/contact.svg";
+  import ProfileIcon from "./icons/profile.svg";
+  import BillingIcon from "./icons/billing.svg";
+  import HelpIcon from "./icons/help.svg";
+  import LogoutIcon from "./icons/logout.svg";
+  import ChevronLeftIcon from "./icons/chevron-left.svg";
+  import ArrowLeftIcon from "./icons/arrow-left.svg";
+  import BoxIcon from "./icons/box.svg";
+  import TShirtIcon from "./icons/t-shirt.svg";
+  import ChevronRightIcon from "./icons/chevron-right.svg";
+  import InfoIcon from "./icons/info.svg";
+  import { computed, onMounted, ref } from "vue";
 
-const menu = [
-  [
-    { name: "Dashboard", icon: DashboardIcon },
-    { name: "Design", icon: DesignIcon },
-    { name: "Orders", icon: OrderIcon },
-    { name: "Inventory", icon: InventoryIcon },
-    { name: "Shipments", icon: TruckIcon },
-    { name: "Contacts", icon: ContactIcon },
-  ],
-  [
-    { name: "Profile", icon: ProfileIcon },
-    { name: "Billing", icon: BillingIcon },
-    { name: "Help", icon: HelpIcon },
-    { name: "Logout", icon: LogoutIcon },
-  ],
-];
+  import { useFetch } from "@vueuse/core";
 
-const products = [
-  {
-    name: "Preset Pack",
-    imgUrl: "/img/preset-pack.png",
-    status: "In-Design",
-    color: "Blue",
-    category: "Pack",
-  },
-  {
-    name: "Swag Pack",
-    imgUrl: "/img/swag-pack.png",
-    status: "In-Design",
-    color: "Custom",
-    category: "Pack",
-  },
-  {
-    name: "Bulk Swag",
-    imgUrl: "/img/bulk-swag.png",
-    status: "Ready to review",
-    color: "Custom",
-    category: "Bulk",
-  },
-];
+  const menu = [
+    [
+      { name: "Dashboard", icon: DashboardIcon },
+      { name: "Design", icon: DesignIcon },
+      { name: "Orders", icon: OrderIcon },
+      { name: "Inventory", icon: InventoryIcon },
+      { name: "Shipments", icon: TruckIcon },
+      { name: "Contacts", icon: ContactIcon },
+    ],
+    [
+      { name: "Profile", icon: ProfileIcon },
+      { name: "Billing", icon: BillingIcon },
+      { name: "Help", icon: HelpIcon },
+      { name: "Logout", icon: LogoutIcon },
+    ],
+  ];
 
-const orders = [
-  { productName: "Swag -- Pack 1/29/2020", price: 75, quantity: 8 },
-  { productName: "Tech Pack -- Pack 1/29/2020", price: 26, quantity: 24 },
-  { productName: "Bella + Canvas Tee", price: 14, quantity: 32 },
-  { productName: "Nike Cap", price: 7.2, quantity: 20 },
-  { productName: "Swag -- Pack 1/29/2020", price: 75, quantity: 23 },
-  { productName: "Preset Pack -- Pack 1/29/2020", price: 30, quantity: 24 },
-  { productName: "Swag Pack + Nike Cap", price: 18, quantity: 3 },
-  { productName: "Bulk Swag", price: 30, quantity: 2 },
-];
+  const formatMoney = (value) =>
+    new Intl.NumberFormat("en-us", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
 
-const formatMoney = (value) =>
-  new Intl.NumberFormat("en-us", { style: "currency", currency: "USD" }).format(
-    value
+  const totalOrder = computed(() =>
+    orders.value.reduce((total, order) => total + order.subtotal, 0)
   );
 
-const totalOrder = computed(() =>
-  orders.reduce((total, order) => total + order.price * order.quantity, 0)
-);
+  onMounted(async () => {
+    getProducts();
+    getOrders();
+  });
+
+  const products = ref([]);
+
+  const getProducts = async () => {
+    const { data } = await useFetch(
+      "http://order-dashboard-api.test/api/products"
+    ).json();
+
+    products.value = data.value.data;
+  };
+
+  const orders = ref([]);
+
+  const getOrders = async () => {
+    const { data } = await useFetch(
+      "http://order-dashboard-api.test/api/orders"
+    ).json();
+
+    orders.value = data.value.data;
+  };
 </script>
 
 <template>
@@ -117,9 +110,9 @@ const totalOrder = computed(() =>
       <div class="flex flex-col flex-1 py-4 px-10">
         <button class="flex gap-x-1 items-center text-gray-400">
           <ArrowLeftIcon class="w-4 h-4 fill-current" />
-          <span class="inline-block pt-0.5 text-sm leading-6"
-            >Back to Order</span
-          >
+          <span class="inline-block pt-0.5 text-sm leading-6">
+            Back to Order
+          </span>
         </button>
 
         <section class="pt-6">
@@ -132,7 +125,7 @@ const totalOrder = computed(() =>
               <div
                 class="flex justify-center items-center bg-gray-100 aspect-square"
               >
-                <img :src="product.imgUrl" alt="" />
+                <img :src="product.imageUrl" alt="" />
               </div>
               <div class="flex flex-col p-6">
                 <div class="flex justify-between items-center">
@@ -271,7 +264,7 @@ const totalOrder = computed(() =>
           >
             <span> {{ formatMoney(order.price) }} x {{ order.quantity }} </span>
             <span class="font-bold text-gray-800">
-              {{ formatMoney(order.price * order.quantity) }}
+              {{ formatMoney(order.subtotal) }}
             </span>
           </div>
           <a
