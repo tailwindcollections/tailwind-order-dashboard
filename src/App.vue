@@ -54,10 +54,10 @@
 
   const products = ref([]);
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const getProducts = async () => {
-    const { data } = await useFetch(
-      "http://order-dashboard-api.test/api/products"
-    ).json();
+    const { data } = await useFetch(`${BASE_URL}/api/products`).json();
 
     products.value = data.value.data;
   };
@@ -65,9 +65,7 @@
   const orders = ref([]);
 
   const getOrders = async () => {
-    const { data } = await useFetch(
-      "http://order-dashboard-api.test/api/orders"
-    ).json();
+    const { data } = await useFetch(`${BASE_URL}/api/orders`).json();
 
     orders.value = data.value.data;
   };
@@ -77,7 +75,7 @@
 
   const getShippingAndStorage = async () => {
     const { data } = await useFetch(
-      "http://order-dashboard-api.test/api/shipping-and-storage"
+      `${BASE_URL}/api/shipping-and-storage`
     ).json();
 
     shipping.value = data.value.shipping;
