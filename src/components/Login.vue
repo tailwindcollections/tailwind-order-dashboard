@@ -31,7 +31,7 @@
         alt=""
       />
       <div
-        class="bg-white/60 backdrop-blur-sm absolute inset-0 w-full h-full"
+        class="bg-white/50 backdrop-blur-sm absolute inset-0 w-full h-full"
       ></div>
       <div class="flex absolute bottom-20 justify-center w-full">
         <div class="max-w-md text-center">
